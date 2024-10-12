@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run --watch main.ts",
-    "go": "deno run --allow-net --allow-write main.ts",
+    "go": "deno run --allow-net --allow-write --allow-ffi main.ts",
     "compile": "deno compile --allow-net --allow-write -o main.bin main.ts"
   },
   "imports": {

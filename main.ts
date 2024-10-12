@@ -82,10 +82,36 @@ userMap.set(user.nickname, user);
 userMap.set(user2.nickname, user2);
 userMap.set(user3.nickname, user3);
 
+function getSystemPID(): number{
+
+  // Ruta al estándar de la biblioteca C en macOS
+  const libcPath = "/usr/lib/libc.dylib";
+
+  // Define las funciones que vas a usar desde la biblioteca
+  const libc = Deno.dlopen(libcPath, {
+    "getpid": { parameters: [], result: "i32" },
+  });
+
+  // Llama a la función getpid
+  const pid = libc.symbols.getpid();
+
+  // Cierra la biblioteca cuando ya no la necesitas
+  libc.close();
+
+  return pid;
+
+}
+
+
+console.log(`*** ID del Proceso: ${getSystemPID()} ***`);
+
 //recorre el mapa y muestra los datos de los usuarios
 for (const [_key, value] of userMap) {
     printUser(value);
 }
+
+
+
 
 //Funcion que maneja las solicitudes
 function _handler(req: Request): Response {
@@ -126,11 +152,16 @@ function _handler(req: Request): Response {
 
   }
 
-
 function printUser(user: User) {
 
+  //ejemplo de como con la comita se pueden hacer textos de varias lineas
+  const linea = `
+--------------------------------
+--------------------------------
+  `;
+
   //imprime en pantalla los datos del usuario
-  console.log("------------------------------------------");
+  console.log(linea);
   console.log("Usuario ID:", user.id);
   console.log("Nickname:", user.nickname);
   console.log("Country ID:", user.getCountryId());
@@ -142,13 +173,11 @@ function printUser(user: User) {
 Esta función recibe un objeti del tipo Usuario y crea un archivo en el disco igual a su nombre y guarda el él los datos del usuario
 */
 function saveUser(user: User) :void {
-
   Deno.writeTextFileSync(user.nickname + ".txt", user.getTotalInfo());
-
 }
 
 import { assertEquals } from "jsr:@std/assert";
-import { delay } from "jsr:@std/async";
+import { deadline, delay, retry } from "jsr:@std/async";
 
 //Crea un test case para probar la clase usuario
 Deno.test("test de la clase usaurio", async () => {
@@ -160,6 +189,7 @@ Deno.test("test de la clase usaurio", async () => {
     assertEquals(user.getAddress(), "Calle Falsa 123");
   });
 
+//Ejemplo de un benchmark
 Deno.bench({
   name: "test de la clase usuario",
   fn(){
@@ -167,3 +197,8 @@ Deno.bench({
     printUser(user);
   } 
 })
+
+
+
+
+

@@ -1,0 +1,21 @@
+{
+    "short_name": "MiApp",
+    "name": "Mi Aplicación PWA",
+    "icons": [
+        {
+            "src": "icono-192x192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "icono-512x512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#FFFFFF",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#4CAF50"
+}

@@ -1,0 +1,66 @@
+{
+  "scriptId": "314",
+  "url": "file:///Users/Fernando.Scasserra/code/tspractice/main.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 0, "endOffset": 4327, "count": 1 },
+        { "startOffset": 1796, "endOffset": 1935, "count": 3 },
+        { "startOffset": 1907, "endOffset": 1933, "count": 1 },
+        { "startOffset": 2375, "endOffset": 2398, "count": 3 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getTotalInfo",
+      "ranges": [{ "startOffset": 488, "endOffset": 638, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 641, "endOffset": 680, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "User",
+      "ranges": [{ "startOffset": 684, "endOffset": 845, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getCountryId",
+      "ranges": [{ "startOffset": 882, "endOffset": 930, "count": 7 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getAddress",
+      "ranges": [{ "startOffset": 933, "endOffset": 976, "count": 7 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "saludar",
+      "ranges": [{ "startOffset": 979, "endOffset": 1041, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "handler",
+      "ranges": [{ "startOffset": 2436, "endOffset": 3338, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "printUser",
+      "ranges": [{ "startOffset": 3339, "endOffset": 3653, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "saveUser",
+      "ranges": [{ "startOffset": 3792, "endOffset": 3890, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4066, "endOffset": 4324, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

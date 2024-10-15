@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <title>Secciones Dinámicas</title>
+    <style>
+        /* Estilos para dispositivos móviles */
+        @media only screen and (max-width: 600px) {
+            /* Agrega aquí tus estilos específicos para dispositivos móviles */
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: row; /* Cambio para que los elementos estén en fila */
+            justify-content: space-between; /* Distribuye el espacio entre los botones */
+        }
+
+        button {
+            flex: 1; /* Hace que cada botón se estire para ocupar un tercio del contenedor */            
+            background-color: #4CAF50; /* Color de fondo */
+            color: white; /* Color del texto */
+            padding: 10px 20px; /* Espaciado interno */
+            margin: 0 5px; /* Añade un margen horizontal entre los botones */
+            border: none; /* Sin bordes */
+            border-radius: 5px; /* Bordes redondeados */
+            cursor: pointer; /* Cursor en forma de mano */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Sombra */
+            transition: 0.3s; /* Transición suave */
+            width: 100%; /* Hace que el botón se extienda al ancho del contenedor */
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho final */
+        }
+
+        button:hover {
+            background-color: #45a049; /* Color de fondo al pasar el mouse */
+        }
+
+        div {
+            background-color: #f2f2f2; /* Color de fondo */
+            padding: 20px; /* Espaciado interno */
+            margin-top: 20px; /* Margen superior */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Sombra */
+        }        
+
+        #section1 table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #d6d6d6; /* Gris claro para el fondo de la tabla */
+        }
+
+        #section1 th, #section1 td {
+            border: 1px solid green; /* Bordes verdes para separar tanto filas como columnas */
+            text-align: left;
+            padding: 8px;
+        }
+
+        #section1 tr:first-child th {
+            background-color: green;
+            color: white;
+        }
+
+        #section1 tr:not(:first-child) {
+            background-color: rgb(214, 214, 214); /* Gris claro para las filas que no son la primera */
+        }
+
+        .btn-espaciado {
+            margin-top: 20px; /* Ajusta este valor según necesites */
+        }       
+        
+        #numeroSeleccionado {
+            border-radius: 8px;
+            background-color: #e0f2f1;
+            border: 1px solid #a5d6a7;
+            padding: 5px;
+            width: 200px; /* Ajusta esto según tus necesidades */
+            box-sizing: border-box; /* Para incluir el padding en el ancho total */
+        }
+
+        label[for="numeroSeleccionado"] {
+            display: block;
+            margin-bottom: 5px;
+            color: #4caf50;
+        }        
+        .combo-container {
+            display: flex;
+            align-items: center; /* Asegura que los elementos estén alineados verticalmente */
+            gap: 10px; /* Espacio entre el label y el select */
+        }        
+    </style>
+</head>
+<body>
+    <!-- HTML modificado con contenedor para los botones -->
+    <div class="buttons-container">
+        <button onclick="showSection('section1')">Sección 1</button>
+        <button onclick="showSection('section2')">Sección 2</button>
+        <button onclick="showSection('section3')">Sección 3</button>
+    </div>
+
+    <div id="section1" class="hidden">
+        <h2>Sección 1 - GET</h2>
+        <p>Hace un GET a una API y cambia el contenido de una de las celdas.</p>
+        <table>
+            <tr>
+                <th>Nickname</th>
+                <th>Country</th>
+                <th>City</th>
+                <th>State</th>
+            </tr>
+            <tr>
+                <td id="cell1-1">.</td>
+                <td id="cell1-2">.</td>
+                <td id="cell1-3">.</td>
+                <td id="cell1-4">.</td>
+            </tr>
+            <tr>
+                <td>.</td>
+                <td>.</td>
+                <td>.</td>
+                <td>.</td>
+            </tr>
+            <!-- Agrega más filas según sea necesario -->
+        </table>
+        <div class="combo-container">
+            <label for="numeroSeleccionado" class="btn-espaciado">ID a buscar:</label>        
+            <select id="numeroSeleccionado" class="btn-espaciado">
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+            </select>        
+        </div>
+        <button id="cambiarContenido" class="btn-espaciado" onclick="cambiarContenido()">Cambiar Contenido</button>        
+    </div>
+
+    <div id="section2" class="hidden">
+        <h2>Sección 2</h2>
+        <p>Contenido de la Sección 2.</p>
+        <canvas id="miCanvas" width="200" height="200" style="border:1px solid #000;"></canvas>
+        <button onclick="dibujarCirculo()">Dibujar Círculo</button>
+    </div>
+    <div id="section3" class="hidden">
+        <h2>Sección 3</h2>
+        <p>Contenido de la Sección 3.</p>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('div').forEach(function(div) {
+                div.classList.add('hidden');
+            });
+
+            // Mostrar la sección especificada
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        async function cambiarContenido() {
+            // Obtener el botón
+            var boton = document.getElementById("cambiarContenido");
+            
+            // Deshabilitar el botón y cambiar el color a gris
+            boton.disabled = true;
+            boton.style.backgroundColor = "red"; // Otra opción es agregar una clase que defina el estilo gris.
+
+            try {
+
+                // Obtener el valor seleccionado del combo box
+                var numeroSeleccionado = document.getElementById("numeroSeleccionado").value;
+                // Construir la URL con el número seleccionado
+                const url = `https://api.mercadolibre.com/users/${numeroSeleccionado}`;
+
+                const response = await fetch(url);
+                const data = await response.json(); // Convertir la respuesta a JSON
+            
+                // Actualizar el contenido de la celda con el nickname
+                document.getElementById("cell1-1").innerHTML = data.nickname;
+                document.getElementById("cell1-2").innerHTML = data.country_id;
+                document.getElementById("cell1-3").innerHTML = data.address.city;
+                document.getElementById("cell1-4").innerHTML = data.address.state;
+
+            } catch (error) {
+                console.error('Error al obtener los datos:', error); // Manejar errores
+            } finally {
+                // Habilitar el botón y restablecer el color una vez que se obtiene la respuesta o en caso de error
+                boton.disabled = false;
+                boton.style.backgroundColor = ""; // Restablecer el color original del botón
+            }
+        }   
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker: Registered'))
+                .catch(err => console.log(`Service Worker: Error: ${err}`));
+            });
+        }
+
+        function dibujarCirculo() {
+            var canvas = document.getElementById('miCanvas');
+            if (canvas.getContext) {
+                var ctx = canvas.getContext('2d');
+                
+                // Limpiar el canvas antes de dibujar un nuevo círculo
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Dibujar el círculo
+                ctx.beginPath();
+                ctx.arc(100, 100, 50, 0, Math.PI * 2, true); // Coordenadas (100,100) con radio 50
+                ctx.fill();
+            }
+        }
+
+    </script>
+
+</body>
+</html>

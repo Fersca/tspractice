@@ -77,7 +77,14 @@ if (import.meta.main) {
   const decoder = new TextDecoder();
   for await (const chunk of Deno.stdin.readable) {
     const text = decoder.decode(chunk);
-    sendMessageFromTerminal(text)
+
+    //si el texto contiene la palabra "loop" llama a la función loop con ms
+    if (text.includes("loop")) {
+      const time = parseInt(text.split(" ")[1]);
+      loop(time);
+    } else {
+      sendMessageFromTerminal(text)
+    }
   }  
 
 }
@@ -186,6 +193,15 @@ function sendMessageFromTerminal(message: string) {
     console.log("No hay conexión WebSocket abierta.");
   }
 }
+function loop(time: number) {
+  for (let i = 1; i <= 20; i++) {
+    //llamar a una funcion de delay pero bloqueante, que pasen 30ms y luego siga el código    
+    setTimeout(() => {
+      sendMessageFromTerminal("Loop - "+i);
+    }, time*i);
+  }
+}
+
 
 function printUser(user: User) {
 

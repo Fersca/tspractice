@@ -1,12 +1,15 @@
+
+//De esta forma se importa un file y sus funciones y clases
 import { User } from "./User.ts";
+
+//de esta forma se exporta una función para que pueda ser usada en otros archivos
 export {printUser}
 
+//objeto para enviar desde el server mensahes a los clientes
+let globalSocket: WebSocket | null = null;
+
+//con esta condición se ejecuta el código solo si se ejecuta el archivo directamente
 if (import.meta.main) {
-
-  console.log("Iniciando Deno server");
-
-  //Crea el servidor que recibe peticiones
-  //Deno.serve({port: 8080}, handler);
 
   //Llama a una URL de ejemplo y muestra los datos
   const response = await fetch("https://api.mercadolibre.com/users/20");
@@ -18,6 +21,7 @@ if (import.meta.main) {
 
   //crea un objeto usuario en base a los datos del json
   const user = new User(jsonData.id, jsonData.nickname, jsonData.country_id, jsonData.address.state);
+  
   //llamo al método saludar
   user.saludar();
 
@@ -57,10 +61,25 @@ if (import.meta.main) {
   console.log(`*** ID del Proceso: ${getSystemPID()} ***`);
 
   //recorre el mapa y muestra los datos de los usuarios
+  //si se usa guin bajo es que no se va a usar la variable
   for (const [_key, value] of userMap) {
       printUser(value);
   }
   
+
+  //ejenplo de print en consola
+  console.log("Iniciando Deno server");
+
+  //Crea el servidor que recibe peticiones en un puerto y llama a la función handler
+  Deno.serve({port: 8080}, handler);
+ 
+  //leer texto de la consola
+  const decoder = new TextDecoder();
+  for await (const chunk of Deno.stdin.readable) {
+    const text = decoder.decode(chunk);
+    sendMessageFromTerminal(text)
+  }  
+
 }
 
 function getSystemPID(): number{
@@ -83,8 +102,44 @@ function getSystemPID(): number{
 
 }
 
+
 //Funcion que maneja las solicitudes
-function _handler(req: Request): Response {
+function handler(req: Request): Response {
+
+    //obtiene el pathname
+    const { pathname } = new URL(req.url);
+
+    //si el path es /we y viene con el header upgrade en "websoket" es una solicitud de websocket
+    if (pathname === "/ws" && req.headers.get("upgrade") === "websocket") {
+
+      //se hace el upgrade del protocolo
+      const { socket, response } = Deno.upgradeWebSocket(req);
+
+      // Asignar el socket a la variable global
+      globalSocket = socket;
+
+      socket.onopen = () => {
+        console.log("WebSocket connection opened");
+        socket.send("<<< Bienvenido!");
+      };
+  
+      socket.onmessage = (event) => {
+        console.log("Message from client: ", event.data);
+        // Responder al mensaje recibido
+        socket.send(`${event.data}`);
+      };
+  
+      socket.onerror = (event) => {
+        console.error("WebSocket error:", event);
+      };
+  
+      socket.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+  
+      return response;
+      
+    }
 
     //Imprime en consola la solicitud
     console.log("Method:", req.method);
@@ -122,9 +177,19 @@ function _handler(req: Request): Response {
 
   }
 
+// Ejemplo de cómo enviar un mensaje desde la terminal
+function sendMessageFromTerminal(message: string) {
+  if (globalSocket) {
+    globalSocket.send(">>> "+message);
+    console.log("Mensaje enviado:", message);
+  } else {
+    console.log("No hay conexión WebSocket abierta.");
+  }
+}
+
 function printUser(user: User) {
 
-  //ejemplo de como con la comita se pueden hacer textos de varias lineas
+  //ejemplo de como con la comita se pueden hacer textos de varias lineas, usando la comilla simple
   const linea = `
 --------------------------------
 --------------------------------

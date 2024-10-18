@@ -146,7 +146,10 @@
     </div>
     <div id="section3" class="hidden">
         <h2>Sección 3</h2>
-        <p>Contenido de la Sección 3.</p>
+        <p>Ejemplo de como hacer una conexión websocket</p>
+        <label id="labelws" class="btn-espaciado"></label>        
+        <textarea id="wsmessage" class="btn-espaciado" placeholder="Mensaje a enviar" rows="4" cols="50">Hola</textarea>
+        <button onclick="testWebsocket()">Enviar</button>
     </div>
 
     <script>
@@ -215,6 +218,60 @@
                 ctx.fill();
             }
         }
+
+        // Variable para guardar la conexión de websocket
+        let socket = null;
+        function testWebsocket() {
+
+            const mensaje = document.getElementById("wsmessage").value;
+
+            // Verifica si ya existe una conexión abierta
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                console.log("WebSocket connection is already open.");
+                socket.send(mensaje);
+            } else {
+                socket = new WebSocket("ws://localhost:8080/ws");                
+            }
+        
+            //espera que se abra la conexión de websocket para mandar un evento
+            socket.onopen = () => {
+                console.log("Conexión abierta");
+                socket.send(mensaje);
+            };
+
+            // Recibir un mensaje del servidor
+            socket.onmessage = (event) => {
+                console.log("Respuesta del server:", event.data);
+                let text = document.getElementById("labelws").innerHTML;
+
+                //si el event.data contiene el texto "<<<" se imprime en la consola "hola"
+                if (event.data.includes(">>>")) {
+                    text = text + "<br><span style='color: red;'>" + event.data + "</span><br>";                
+                } else {
+                    text = text + "<br>" + event.data + "<br>";
+                }
+
+                document.getElementById("labelws").innerHTML = text;
+            };
+
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };            
+
+            socket.onclose = () => {
+                console.log("WebSocket connection closed.");
+                // Al cerrar la conexión, establece la variable socket como null
+                socket = null;
+            };            
+        }
+
+        // Función que se ejecutará al presionar Enter
+        document.getElementById("wsmessage").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                testWebsocket();
+                this.value="";                
+            }
+        });
 
     </script>
 

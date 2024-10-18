@@ -1,5 +1,6 @@
 
 //De esta forma se importa un file y sus funciones y clases
+import { deadline } from "@std/async/deadline";
 import { User } from "./User.ts";
 
 //de esta forma se exporta una función para que pueda ser usada en otros archivos
@@ -193,15 +194,28 @@ function sendMessageFromTerminal(message: string) {
     console.log("No hay conexión WebSocket abierta.");
   }
 }
-function loop(time: number) {
+
+async function loop(time: number) {
+
   for (let i = 1; i <= 20; i++) {
-    //llamar a una funcion de delay pero bloqueante, que pasen 30ms y luego siga el código    
+    
+    //llamar a una funcion de delay pero asincónica
+    /*
     setTimeout(() => {
       sendMessageFromTerminal("Loop - "+i);
     }, time*i);
+    */
+
+    //llama a la función delay con el tiempo pasado con sincronizmo
+    await delay(time);
+    sendMessageFromTerminal("Loop - "+i);
   }
 }
 
+// Función para crear un delay de n milisegundos
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function printUser(user: User) {
 

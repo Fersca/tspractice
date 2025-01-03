@@ -1,6 +1,5 @@
 
 //De esta forma se importa un file y sus funciones y clases
-import { deadline } from "@std/async/deadline";
 import { User } from "./User.ts";
 
 //de esta forma se exporta una función para que pueda ser usada en otros archivos
@@ -68,6 +67,7 @@ if (import.meta.main) {
   }
   
 
+
   //ejenplo de print en consola
   console.log("Iniciando Deno server");
 
@@ -89,6 +89,28 @@ if (import.meta.main) {
   }  
 
 }
+
+/*
+function getSystemPID(): number {
+
+  // Ruta a la biblioteca kernel32 en Windows
+  const kernel32Path = "kernel32.dll";
+
+  // Define las funciones que vas a usar desde la biblioteca
+  const kernel32 = Deno.dlopen(kernel32Path, {
+    "GetCurrentProcessId": { parameters: [], result: "u32" },
+  });
+
+  // Llama a la función GetCurrentProcessId
+  const pid = kernel32.symbols.GetCurrentProcessId();
+
+  // Cierra la biblioteca cuando ya no la necesitas
+  kernel32.close();
+
+  return pid;
+
+}
+*/
 
 function getSystemPID(): number{
 
@@ -193,6 +215,11 @@ function sendMessageFromTerminal(message: string) {
   } else {
     console.log("No hay conexión WebSocket abierta.");
   }
+  
+  //splt the message in each word and store that in a file called fer.txt
+  const words = message.split(" ");
+  Deno.writeTextFileSync("fer.txt", words.join("\n"));
+
 }
 
 async function loop(time: number) {
